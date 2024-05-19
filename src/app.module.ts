@@ -10,9 +10,12 @@ import { ShopModule } from './shop/shop.module';
 import { RoleModule } from './role/role.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { CustomerModule } from './customer/customer.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
+    RestaurantModule,
+    RestaurantModule,
     DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -24,6 +27,7 @@ import { CustomerModule } from './customer/customer.module';
     RoleModule,
     RestaurantModule,
     CustomerModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

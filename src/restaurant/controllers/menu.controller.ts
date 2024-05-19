@@ -61,7 +61,10 @@ export class MenuController {
       take: parseInt(take),
     });
     return {
-      menuItems: items.map((item) => item),
+      menuItems: items.map((item) => {
+        delete item.remoteImageId;
+        return item;
+      }),
       count,
       hasNext: parseInt(skip) + parseInt(take) < count,
     };

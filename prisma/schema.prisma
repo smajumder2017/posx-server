@@ -105,34 +105,70 @@ model MenuCategory {
 }
 
 model MenuItems {
-  id           String       @id @default(uuid())
-  itemName     String
-  shortCode    String
-  description  String
-  availability Boolean
-  isActive     Boolean
-  foodType     String
-  price        Float
-  waitingTime  Int
-  spiceScale   String
-  servingTime  ServingTime
-  itemImageUrl String
-  categoryId   String
-  shopId       String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  category     MenuCategory @relation(fields: [categoryId], references: [id])
-  shop         Shop         @relation(fields: [shopId], references: [id])
+  id            String       @id @default(uuid())
+  itemName      String
+  shortCode     String
+  description   String       @db.Text
+  availability  Boolean
+  isActive      Boolean
+  foodType      String
+  price         Float
+  waitingTime   Int
+  spiceScale    String
+  servingTime   Json
+  itemImageUrl  String
+  remoteImageId String
+  categoryId    String
+  shopId        String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  category      MenuCategory @relation(fields: [categoryId], references: [id])
+  shop          Shop         @relation(fields: [shopId], references: [id])
 }
 
 model Customer {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   name      String
-  contactNo String   @unique
-  gender    Gender
-  dob       DateTime
+  contactNo String    @unique
+  gender    Gender?
+  dob       DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model OrderStatus {
+  id        Int      @id
+  value     String   @unique
+  orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id            String      @id
+  orderNumber   String
+  shopId        String
+  customerId    String?
+  employeeId    String?
+  orderStatusId Int
+  isSynced      Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+  orderStatus   OrderStatus @relation(fields: [orderStatusId], references: [id])
+}
+
+model OrderItem {
+  id              String   @id @default(uuid())
+  orderId         String
+  itemId          String
+  itemName        String
+  price           Float
+  quantity        Int
+  rejectionReason String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  order           Order    @relation(fields: [orderId], references: [id])
 }
 
 enum Gender {
@@ -144,5 +180,4 @@ enum ServingTime {
   BREAKFAST
   LUNCH
   DINNER
-  ALL
 }

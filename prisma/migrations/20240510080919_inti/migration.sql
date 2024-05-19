@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE `Role` (
-    `id` VARCHAR(191) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `value` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE `User` (
 CREATE TABLE `UserRoles` (
     `id` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
-    `roleId` VARCHAR(191) NOT NULL,
+    `roleId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -40,7 +40,7 @@ CREATE TABLE `UserRoles` (
 
 -- CreateTable
 CREATE TABLE `ShopType` (
-    `id` VARCHAR(191) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `value` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -64,8 +64,8 @@ CREATE TABLE `UserShop` (
 CREATE TABLE `Shop` (
     `id` VARCHAR(191) NOT NULL,
     `shopName` VARCHAR(191) NOT NULL,
-    `shopCode` VARCHAR(191) NOT NULL,
-    `shopTypeId` VARCHAR(191) NOT NULL,
+    `shopCode` VARCHAR(255) NOT NULL,
+    `shopTypeId` INTEGER NOT NULL,
     `registrationNo` VARCHAR(191) NULL,
     `isActive` BOOLEAN NOT NULL,
     `contactNo` VARCHAR(191) NOT NULL,
@@ -78,7 +78,6 @@ CREATE TABLE `Shop` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Shop_shopCode_key`(`shopCode`),
     UNIQUE INDEX `Shop_registrationNo_key`(`registrationNo`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -115,20 +114,35 @@ CREATE TABLE `MenuItems` (
     `id` VARCHAR(191) NOT NULL,
     `itemName` VARCHAR(191) NOT NULL,
     `shortCode` VARCHAR(191) NOT NULL,
-    `description` VARCHAR(191) NOT NULL,
+    `description` TEXT NOT NULL,
     `availability` BOOLEAN NOT NULL,
     `isActive` BOOLEAN NOT NULL,
     `foodType` VARCHAR(191) NOT NULL,
     `price` DOUBLE NOT NULL,
     `waitingTime` INTEGER NOT NULL,
     `spiceScale` VARCHAR(191) NOT NULL,
-    `servingTime` ENUM('BREAKFAST', 'LUNCH', 'DINNER', 'ALL') NOT NULL,
+    `servingTime` JSON NOT NULL,
     `itemImageUrl` VARCHAR(191) NOT NULL,
+    `remoteImageId` VARCHAR(191) NOT NULL,
     `categoryId` VARCHAR(191) NOT NULL,
     `shopId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Customer` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `contactNo` VARCHAR(191) NOT NULL,
+    `gender` ENUM('MALE', 'FEMALE') NULL,
+    `dob` DATETIME(3) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Customer_contactNo_key`(`contactNo`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

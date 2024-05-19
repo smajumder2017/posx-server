@@ -1,19 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums, Customer } from '@prisma/client';
+
 import {
-  IsDate,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
+  IsUUID,
 } from 'class-validator';
 
 interface ICustomer extends Customer {}
 
-export class CreateCustomerDto
-  implements Omit<ICustomer, 'id' | 'createdAt' | 'updatedAt'>
+export class UpserCustomerDto
+  implements Omit<ICustomer, 'createdAt' | 'updatedAt'>
 {
+  @ApiProperty()
+  @IsUUID()
+  @IsOptional()
+  id: string;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -34,7 +40,6 @@ export class CreateCustomerDto
   @ApiProperty()
   @IsString()
   @IsOptional()
-  @IsDate()
   dob: Date;
 }
 

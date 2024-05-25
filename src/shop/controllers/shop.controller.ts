@@ -48,9 +48,9 @@ export class ShopController {
   @Get('type')
   @UseGuards(JwtAuthGuard)
   async getAllShopType(
-    @Query('lastSyncTime') lastSyncTime: string,
     @Query('skip') skip: string,
     @Query('take') take: string,
+    @Query('lastSyncTime') lastSyncTime?: string,
   ) {
     const findConditions: Prisma.ShopTypeWhereInput = {};
     if (lastSyncTime) {
@@ -72,10 +72,27 @@ export class ShopController {
     };
   }
 
+  @Get('all')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER')
+  async getAllShops(@GetUser() user: JwtPayload) {
+    return this.shopService.getAllUserShop({
+      where: { userId: user.id },
+      include: { shop: { include: { shopType: true } } },
+    });
+  }
+
   @Get(':shopId')
   @UseGuards(JwtAuthGuard)
   async getShopDetails(@Param('shopId') shopId: string) {
     return this.shopService.getShopById(shopId);
+  }
+
+  @Get(':shopId/details')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER', 'ADMIN')
+  async getShopDetailsAdmin(@Param('shopId') shopId: string) {
+    return this.shopService.getShopByIdwithType(shopId);
   }
 
   @Get(':shopId/users')

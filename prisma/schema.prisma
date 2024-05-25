@@ -28,6 +28,8 @@ model User {
   updatedAt DateTime    @updatedAt
   userShops UserShop[]
   userRoles UserRoles[]
+  Order     Order[]
+  Billing   Billing[]
 }
 
 model UserRoles {
@@ -79,6 +81,7 @@ model Shop {
   menuCategory   MenuCategory[]
   menuItems      MenuItems[]
   license        License[]
+  Billing        Billing[]
 }
 
 model License {
@@ -113,11 +116,11 @@ model MenuItems {
   isActive      Boolean
   foodType      String
   price         Float
-  waitingTime   Int
+  waitingTime   Int?
   spiceScale    String
-  servingTime   Json
-  itemImageUrl  String
-  remoteImageId String
+  servingTime   Json?
+  itemImageUrl  String?
+  remoteImageId String?
   categoryId    String
   shopId        String
   createdAt     DateTime     @default(now())
@@ -134,6 +137,8 @@ model Customer {
   dob       DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  Order     Order[]
+  Billing   Billing[]
 }
 
 model OrderStatus {
@@ -145,17 +150,21 @@ model OrderStatus {
 }
 
 model Order {
-  id            String      @id
-  orderNumber   String
-  shopId        String
-  customerId    String?
-  employeeId    String?
-  orderStatusId Int
-  isSynced      Boolean     @default(false)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  items         OrderItem[]
-  orderStatus   OrderStatus @relation(fields: [orderStatusId], references: [id])
+  id                 String      @id
+  orderNumber        String
+  shopId             String
+  customerId         String?
+  employeeId         String?
+  orderStatusId      Int
+  isClosed           Boolean     @default(false)
+  cancellationReason String?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  items              OrderItem[]
+  orderStatus        OrderStatus @relation(fields: [orderStatusId], references: [id])
+  employee           User?       @relation(fields: [employeeId], references: [id])
+  customer           Customer?   @relation(fields: [customerId], references: [id])
+  bills              Billing[]
 }
 
 model OrderItem {
@@ -169,6 +178,39 @@ model OrderItem {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   order           Order    @relation(fields: [orderId], references: [id])
+}
+
+model Billing {
+  id             String    @id @default(uuid())
+  orderId        String
+  shopId         String
+  customerId     String
+  employeeId     String
+  isActive       Boolean   @default(true)
+  isSetteled     Boolean
+  amount         Float
+  discount       Float     @default(0)
+  gst            Float     @default(0)
+  serviceCharges Float     @default(0)
+  totalAmount    Float
+  roundoffDiff   Float
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  order          Order     @relation(fields: [orderId], references: [id])
+  shop           Shop      @relation(fields: [shopId], references: [id])
+  employee       User      @relation(fields: [employeeId], references: [id])
+  customer       Customer  @relation(fields: [customerId], references: [id])
+  payments       Payment[]
+}
+
+model Payment {
+  id             String   @id @default(uuid())
+  billId         String
+  amountRecieved Float
+  paymentMode    String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  bill           Billing  @relation(fields: [billId], references: [id])
 }
 
 enum Gender {

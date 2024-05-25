@@ -1,8 +1,11 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserService } from '../services/user.service';
 import { User, Prisma } from '@prisma/client';
+import { CreateUsersDto } from '../dto/users.dto';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -75,5 +78,12 @@ export class UserController {
       count,
       hasNext: parseInt(skip) + parseInt(take) < count,
     };
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER', 'ADMIN')
+  @Post()
+  createUser(createUserDto: CreateUsersDto) {
+    return this.userService.createUser(createUserDto);
   }
 }

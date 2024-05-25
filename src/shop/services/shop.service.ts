@@ -51,6 +51,13 @@ export class ShopService {
     return this.prismaService.shop.findUnique({ where: { id } });
   }
 
+  getShopByIdwithType(id: string) {
+    return this.prismaService.shop.findUnique({
+      where: { id },
+      include: { shopType: true },
+    });
+  }
+
   getShopUserCount(whereOptions?: Prisma.UserShopCountArgs) {
     return this.prismaService.userShop.count(whereOptions);
   }
@@ -65,5 +72,9 @@ export class ShopService {
 
   findAllShopTypes(whereOptions: Prisma.ShopTypeFindManyArgs) {
     return this.prismaService.shopType.findMany(whereOptions);
+  }
+
+  getAllUserShop(findOptions: Prisma.UserShopFindManyArgs) {
+    return this.prismaService.userShop.findMany(findOptions);
   }
 }

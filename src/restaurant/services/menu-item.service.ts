@@ -6,8 +6,15 @@ import { PrismaService } from 'src/infra/database/services/prisma.service';
 export class MenuItemService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create(menuCategory: Prisma.MenuCategoryCreateInput) {
-    return this.prismaService.menuCategory.create({ data: menuCategory });
+  create(menuItem: Prisma.MenuItemsUncheckedCreateInput) {
+    return this.prismaService.menuItems.create({ data: menuItem });
+  }
+
+  update(menuItem: Prisma.MenuItemsUncheckedUpdateInput) {
+    return this.prismaService.menuItems.update({
+      data: menuItem,
+      where: { id: menuItem.id.toString() },
+    });
   }
 
   findMenuItemsByShopId(

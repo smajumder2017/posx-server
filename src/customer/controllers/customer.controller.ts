@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { CustomerService } from '../services/customer.service';
 import { UpserCustomerDto } from '../dto/customer.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 @Controller('customer')
 export class CustomerController {

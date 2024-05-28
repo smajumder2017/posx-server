@@ -14,9 +14,12 @@ export class ShopService {
 
   private generateShopCode(shopName: string) {
     const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const shopInitials =
-      shopName.toLowerCase().split(' ')[0].charAt[0] +
-        shopName.toLowerCase().split(' ')[1]?.charAt[0] || '';
+    let shopInitials = '';
+    const splitted = shopName.toLowerCase().split(' ');
+    splitted.forEach((part) => {
+      shopInitials += part.charAt(0);
+    });
+
     return `posx-${shopInitials}-${customAlphabet(alphabet.toLowerCase(), 10)()}`;
   }
 

@@ -7,9 +7,18 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createUser(user: Prisma.UserUncheckedCreateInput) {
+  async createUser(user: Prisma.UserUncheckedCreateInput, shopId?: string) {
     user.password = await bcrypt.hash(user.password, 10);
-    return this.prismaService.user.create({ data: user });
+    return this.prismaService.user.create({
+      data: {
+        ...user,
+        userShops: shopId && {
+          create: {
+            shopId,
+          },
+        },
+      },
+    });
   }
 
   getUserById(id: string) {
@@ -74,7 +83,7 @@ export class UserService {
     return this.prismaService.user.count(whereOptions);
   }
 
-  findUsersByShopId(
+  findShopUsersByShopId(
     shopId: string,
     whereOptions?: Prisma.UserShopFindManyArgs,
   ) {
@@ -82,13 +91,20 @@ export class UserService {
       ...whereOptions,
       where: { shopId, ...whereOptions.where },
       include: {
+        ...whereOptions.include,
         user: true,
       },
     });
   }
 
-  userCountByShopId(shopId: string) {
+  shopUserCountByShopId(shopId: string) {
     return this.prismaService.userShop.count({ where: { shopId } });
+  }
+
+  userCountByShopId(whereCondition: Prisma.UserWhereInput) {
+    return this.prismaService.user.count({
+      where: whereCondition,
+    });
   }
 
   userRoleCount(whereOptions?: Prisma.UserRolesCountArgs) {
@@ -97,5 +113,13 @@ export class UserService {
 
   findAllUserRoles(whereOptions: Prisma.UserRolesFindManyArgs) {
     return this.prismaService.userRoles.findMany(whereOptions);
+  }
+
+  createUserRoles(userRoles: Prisma.UserRolesUncheckedCreateInput[]) {
+    return this.prismaService.userRoles.createMany({ data: userRoles });
+  }
+
+  deleteUserRole(id: string) {
+    return this.prismaService.userRoles.delete({ where: { id } });
   }
 }

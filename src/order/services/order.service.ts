@@ -18,4 +18,18 @@ export class OrderService {
   getAllOrderStatuses(searchOptions: Prisma.OrderStatusFindManyArgs) {
     return this.prismaService.orderStatus.findMany(searchOptions);
   }
+  searchOrders(searchOptions: Prisma.OrderFindManyArgs) {
+    return this.prismaService.order.findMany(searchOptions);
+  }
+
+  getOrderCount(countOptions: Prisma.OrderCountArgs) {
+    return this.prismaService.order.count(countOptions);
+  }
+
+  findOrderById(orderId: string) {
+    return this.prismaService.order.findUnique({
+      where: { id: orderId },
+      include: { items: { where: { rejectionReason: null } }, customer: true },
+    });
+  }
 }

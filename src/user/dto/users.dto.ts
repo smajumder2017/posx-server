@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsEmail,
   IsPhoneNumber,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateUsersDto {
@@ -22,7 +23,7 @@ export class CreateUsersDto {
   @ApiProperty({ required: false })
   @IsEmail()
   @IsOptional()
-  email: string;
+  email?: string;
 
   @ApiProperty({ required: true })
   @IsString()
@@ -43,6 +44,10 @@ export class CreateUsersDto {
   @IsPhoneNumber()
   @IsNotEmpty()
   contactNo: string;
+
+  @ApiProperty({ required: true })
+  @IsUUID()
+  shopId: string;
 }
 
 export class UpdateUserDto extends CreateUsersDto {
@@ -54,4 +59,14 @@ export class UpdateUserDto extends CreateUsersDto {
   @IsString()
   @IsOptional()
   hashed_refresh_token?: string;
+}
+
+interface IUserRoleCreate {
+  userId: string;
+  roleId: number;
+}
+
+export class ChangeUserRolesDto {
+  create: IUserRoleCreate[];
+  delete: string[];
 }

@@ -1,11 +1,21 @@
-import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserService } from '../services/user.service';
 import { User, Prisma } from '@prisma/client';
-import { CreateUsersDto } from '../dto/users.dto';
+import { ChangeUserRolesDto, CreateUsersDto } from '../dto/users.dto';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtPayload } from 'src/auth/interfaces';
 
 @Controller('user')
 export class UserController {
@@ -27,26 +37,54 @@ export class UserController {
   }
 
   @Get('shop/:shopId')
-  @UseGuards(JwtAuthGuard)
-  async getAllUsersByShop(
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER', 'ADMIN')
+  async getShopUsers(
     @Param('shopId') shopId: string,
-    @Query('lastSyncTime') lastSyncTime: string,
     @Query('skip') skip: string,
     @Query('take') take: string,
+    @Query('lastSyncTime') lastSyncTime?: string,
   ) {
     const findConditions: Prisma.UserShopWhereInput = {};
     if (lastSyncTime) {
       findConditions.updatedAt = { gt: new Date(lastSyncTime) };
     }
-    console.log(findConditions);
-    const count = await this.userService.userCountByShopId(shopId);
-    const users = await this.userService.findUsersByShopId(shopId, {
+
+    const count = await this.userService.shopUserCountByShopId(shopId);
+    const users = await this.userService.findShopUsersByShopId(shopId, {
       where: findConditions,
       skip: parseInt(skip),
       take: parseInt(take),
     });
     return {
       users: users.map((shopUser) => shopUser.user),
+      count,
+      hasNext: parseInt(skip) + parseInt(take) < count,
+    };
+  }
+
+  @Get('all/:shopId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER', 'ADMIN')
+  async getAllUsersByShop(
+    @Param('shopId') shopId: string,
+    @Query('skip') skip: string,
+    @Query('take') take: string,
+    @GetUser() user: JwtPayload,
+  ) {
+    const findConditions: Prisma.UserWhereInput = {
+      userShops: { some: { shopId, userId: { not: user.id } } },
+      userRoles: { every: { role: { value: { not: 'OWNER' } } } },
+    };
+    const count = await this.userService.userCountByShopId(findConditions);
+    const users = await this.userService.findAllUsers({
+      where: findConditions,
+      include: { userRoles: { include: { role: true } } },
+      skip: parseInt(skip),
+      take: parseInt(take),
+    });
+    return {
+      users: users,
       count,
       hasNext: parseInt(skip) + parseInt(take) < count,
     };
@@ -64,7 +102,7 @@ export class UserController {
     if (lastSyncTime) {
       findConditions.updatedAt = { gt: new Date(lastSyncTime) };
     }
-    console.log(findConditions);
+
     const count = await this.userService.userRoleCount({
       where: findConditions,
     });
@@ -83,7 +121,22 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('OWNER', 'ADMIN')
   @Post()
-  createUser(createUserDto: CreateUsersDto) {
-    return this.userService.createUser(createUserDto);
+  createUser(@Body() createUserDto: CreateUsersDto) {
+    const { shopId, ...user } = createUserDto;
+    return this.userService.createUser(user, shopId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER', 'ADMIN')
+  @Put('roles')
+  async updateUserRoles(@Body() updateUserRoles: ChangeUserRolesDto) {
+    if (updateUserRoles.delete.length) {
+      const delUserRoles = updateUserRoles.delete.map((id) => {
+        return this.userService.deleteUserRole(id);
+      });
+      await Promise.all(delUserRoles);
+    }
+    await this.userService.createUserRoles(updateUserRoles.create);
+    return;
   }
 }

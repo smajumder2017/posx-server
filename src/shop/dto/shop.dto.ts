@@ -9,6 +9,7 @@ import {
   IsLongitude,
   IsInt,
   IsBoolean,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateShopDto {
@@ -67,4 +68,24 @@ export class CreateShopDto {
   @IsNotEmpty()
   @IsLongitude()
   longitude: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  gstinNo?: string;
+
+  @ApiProperty({ required: false })
+  @IsNumber()
+  @IsOptional()
+  cgstPercentage?: number;
+
+  @ApiProperty({ required: false })
+  @IsNumber()
+  @IsOptional()
+  sgstPercentage?: number;
+
+  @ApiProperty({ required: false })
+  @IsNumber()
+  @IsOptional()
+  serviceChargePercentage?: number;
 }

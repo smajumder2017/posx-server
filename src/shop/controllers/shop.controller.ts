@@ -56,7 +56,7 @@ export class ShopController {
     if (lastSyncTime) {
       findConditions.updatedAt = { gt: new Date(lastSyncTime) };
     }
-    console.log(findConditions);
+
     const count = await this.shopService.getShopTypeCount({
       where: findConditions,
     });

@@ -35,7 +35,9 @@ export class MenuController {
     menuCategories.sort((a, b) => b.displayIndex - a.displayIndex);
     return this.menuCategoryService.create({
       ...createCategoryDto,
-      displayIndex: menuCategories[0].displayIndex + 1,
+      displayIndex: menuCategories.length
+        ? menuCategories[0].displayIndex + 1
+        : 0,
     });
   }
 

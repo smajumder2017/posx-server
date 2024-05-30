@@ -47,6 +47,7 @@ export class CreateUsersDto {
 
   @ApiProperty({ required: true })
   @IsUUID()
+  @IsOptional()
   shopId: string;
 }
 

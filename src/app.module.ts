@@ -13,6 +13,7 @@ import { CustomerModule } from './customer/customer.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
 import { BillingModule } from './billing/billing.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { BillingModule } from './billing/billing.module';
     OrderModule,
     PaymentModule,
     BillingModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

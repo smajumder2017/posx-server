@@ -9,12 +9,12 @@ async function bootstrap() {
 
   const config = app.get<ConfigService>(ConfigService);
   const port = config.get('SERVER_PORT');
-  const corsOrigins = config.get('CORS_ORIGINS').split(',');
+  const corsOrigins = config.get<string>('CORS_ORIGINS').split(',');
 
   app.enableCors({
     credentials: true,
     origin: function (origin, callback) {
-      if (corsOrigins.indexOf(origin) !== -1) {
+      if (corsOrigins.indexOf(origin) !== -1 || corsOrigins.includes('*')) {
         console.log('allowed cors for:', origin);
         callback(null, true);
       } else {

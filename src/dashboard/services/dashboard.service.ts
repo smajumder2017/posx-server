@@ -25,14 +25,14 @@ export class DashboardService {
   async getSalesData(shopId: string) {
     const curr = new Date(); // get current date
     const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-    const last = first + 6; // last day is the first day + 6
 
     const firstday = new Date(curr.setDate(first)).toUTCString();
-    const lastday = new Date(curr.setDate(last)).toUTCString();
+    const lastday = new Date(moment(firstday).add(6, 'd')).toUTCString();
+    console.log(firstday, lastday);
     const bills = await this.prismaService.billing.findMany({
       where: {
         createdAt: {
-          lte: new Date(moment(lastday).format('YYYY-MM-DD')),
+          lte: new Date(moment(lastday).add(1, 'd').format('YYYY-MM-DD')),
           gte: new Date(moment(firstday).format('YYYY-MM-DD')),
         },
         isActive: true,

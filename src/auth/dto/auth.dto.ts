@@ -55,6 +55,7 @@ export class UserInfoResponseDto implements JwtPayload {
     id: string;
     userId: string;
     roleId: number;
+    isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
   }[];
@@ -62,6 +63,7 @@ export class UserInfoResponseDto implements JwtPayload {
     id: string;
     userId: string;
     shopId: string;
+    isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
   }[];

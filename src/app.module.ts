@@ -14,6 +14,7 @@ import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
 import { BillingModule } from './billing/billing.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     PaymentModule,
     BillingModule,
     DashboardModule,
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

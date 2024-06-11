@@ -16,9 +16,6 @@ export class DashboardService {
         acc += amountRecieved;
         return acc;
       }, 0);
-    if (paymentMode === 'DebitCard') {
-      console.log();
-    }
     return value;
   }
 
@@ -100,14 +97,14 @@ export class DashboardService {
     // const curr = new Date(); // get current date
     // const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
 
-    const firstday = new Date(range.startDate).toUTCString();
-    const lastday = new Date(range.endDate).toUTCString();
+    const firstday = new Date(moment(range.startDate).format('YYYY-MM-DD'));
+    const lastday = new Date(moment(range.endDate).format('YYYY-MM-DD'));
     console.log(firstday, lastday);
     const bills = await this.prismaService.billing.findMany({
       where: {
         createdAt: {
-          lte: new Date(moment(lastday).add(1, 'd').format('YYYY-MM-DD')),
-          gte: new Date(moment(firstday).format('YYYY-MM-DD')),
+          lte: lastday,
+          gte: firstday,
         },
         isActive: true,
         isSetteled: true,

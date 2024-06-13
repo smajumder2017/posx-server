@@ -126,7 +126,6 @@ export class DashboardService {
     }> = Array.from(Array(7))
       .map((_, index) => {
         return moment(lastday)
-          .utcOffset(330)
           .subtract(index.toString(), 'd')
           .format('DD/MM/YYYY');
       })
@@ -144,9 +143,7 @@ export class DashboardService {
 
     const salesByDate = bills.reduce(
       (result, { createdAt, totalAmount, payments }) => {
-        const date: string = moment(createdAt)
-          .utcOffset(330)
-          .format('DD/MM/YYYY');
+        const date: string = moment(createdAt).format('DD/MM/YYYY');
         const total = (result[date]?.total || 0) + totalAmount;
         const cash =
           (result[date]?.cash || 0) + this.getTotalPayments(payments, 'Cash');

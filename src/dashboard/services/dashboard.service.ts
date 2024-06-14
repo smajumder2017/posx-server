@@ -99,7 +99,7 @@ export class DashboardService {
 
     const firstday = new Date(moment(range.startDate).format('YYYY-MM-DD'));
     const lastday = new Date(moment(range.endDate).format('YYYY-MM-DD'));
-    console.log(firstday, lastday);
+
     const bills = await this.prismaService.billing.findMany({
       where: {
         createdAt: {
@@ -116,12 +116,12 @@ export class DashboardService {
     });
 
     const currentDate = moment(range.startDate).subtract(1, 'd');
-    console.log(currentDate, range.startDate);
+
     const startDate = new Date(
       currentDate.clone().startOf('isoWeek').toString(),
     );
     const endDate = new Date(currentDate.clone().endOf('isoWeek').toString());
-    console.log('last period range', startDate, endDate);
+
     const lastWeekBills = await this.prismaService.billing.findMany({
       where: {
         createdAt: {
@@ -136,8 +136,6 @@ export class DashboardService {
         payments: true,
       },
     });
-
-    console.log(lastWeekBills);
 
     const lastPeriodTotalSales = lastWeekBills.reduce((acc, curr) => {
       return acc + curr.totalAmount;

@@ -115,10 +115,10 @@ export class DashboardService {
       },
     });
 
-    const currentDate = moment(range.startDate)
+    const currentDate = moment(new Date(range.startDate))
       .startOf('isoWeek')
       .subtract(1, 'd');
-
+    console.log(currentDate);
     const startDate = new Date(
       currentDate.clone().startOf('isoWeek').toString(),
     );

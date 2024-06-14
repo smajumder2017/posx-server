@@ -139,6 +139,8 @@ export class DashboardService {
       },
     });
 
+    console.log(lastWeekBills);
+
     const lastPeriodTotalSales = lastWeekBills.reduce((acc, curr) => {
       return acc + curr.totalAmount;
     }, 0);

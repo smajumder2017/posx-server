@@ -115,6 +115,32 @@ export class DashboardService {
       },
     });
 
+    const currentDate = moment(firstday).startOf('isoWeek').subtract(1, 'd');
+
+    const startDate = new Date(
+      currentDate.clone().startOf('isoWeek').toString(),
+    );
+    const endDate = new Date(currentDate.clone().endOf('isoWeek').toString());
+
+    const lastWeekBills = await this.prismaService.billing.findMany({
+      where: {
+        createdAt: {
+          lte: endDate,
+          gte: startDate,
+        },
+        isActive: true,
+        isSetteled: true,
+        shopId,
+      },
+      include: {
+        payments: true,
+      },
+    });
+
+    const lastPeriodTotalSales = lastWeekBills.reduce((acc, curr) => {
+      return acc + curr.totalAmount;
+    }, 0);
+
     const series: Array<{
       [key: string]: {
         total: number;
@@ -161,6 +187,6 @@ export class DashboardService {
       series,
     );
 
-    return { salesByDate };
+    return { salesByDate, lastPeriodTotalSales };
   }
 }

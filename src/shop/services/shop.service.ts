@@ -3,7 +3,7 @@ import { PrismaService } from 'src/infra/database/services/prisma.service';
 import { Prisma } from '@prisma/client';
 import { LicenseService } from 'src/license/services/license.service';
 import { customAlphabet } from 'nanoid';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class ShopService {
@@ -50,6 +50,13 @@ export class ShopService {
     });
   }
 
+  updateShop(shop: Prisma.ShopUncheckedUpdateInput) {
+    return this.prismaService.shop.update({
+      where: { id: shop.id.toString() },
+      data: shop,
+    });
+  }
+
   getShopById(id: string) {
     return this.prismaService.shop.findUnique({ where: { id } });
   }
@@ -79,5 +86,20 @@ export class ShopService {
 
   getAllUserShop(findOptions: Prisma.UserShopFindManyArgs) {
     return this.prismaService.userShop.findMany(findOptions);
+  }
+
+  getShopConfig(shopId: string) {
+    return this.prismaService.shopConfig.findUnique({ where: { shopId } });
+  }
+
+  upsertShopConfig(
+    shopConfig: Prisma.ShopConfigUncheckedCreateInput &
+      Prisma.ShopConfigUncheckedUpdateInput,
+  ) {
+    return this.prismaService.shopConfig.upsert({
+      where: { shopId: shopConfig.shopId },
+      create: shopConfig,
+      update: shopConfig,
+    });
   }
 }

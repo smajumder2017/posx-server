@@ -90,6 +90,16 @@ model Shop {
   menuItems               MenuItems[]
   license                 License[]
   Billing                 Billing[]
+  shopConfig              ShopConfig?
+}
+
+model ShopConfig {
+  id        String   @id @default(uuid())
+  shopId    String   @unique
+  config    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  shop      Shop     @relation(fields: [shopId], references: [id])
 }
 
 model License {

@@ -4,8 +4,8 @@ import {
   Transaction,
 } from 'src/infra/database/services/prisma.service';
 import { Prisma } from '@prisma/client';
-import * as generateLicenseKey from '@mcnaveen/license-gen';
-import * as moment from 'moment';
+import generateLicenseKey from '@mcnaveen/license-gen';
+import moment from 'moment';
 
 @Injectable()
 export class LicenseService {

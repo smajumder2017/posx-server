@@ -10,6 +10,7 @@ import {
   IsInt,
   IsBoolean,
   IsNumber,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateShopDto {
@@ -88,4 +89,39 @@ export class CreateShopDto {
   @IsNumber()
   @IsOptional()
   serviceChargePercentage?: number;
+}
+
+export class UpdateShopDto extends CreateShopDto {
+  @ApiProperty()
+  @IsUUID()
+  id: string;
+}
+
+export class ShopConfigDto {
+  delviery: DeliveryConfig;
+}
+
+interface IDeliveryCharge {
+  distance: number;
+  amount: number;
+}
+
+export class DeliveryConfig {
+  enabled: boolean;
+  serviceRadius: number;
+  deliveryCharges: IDeliveryCharge[];
+}
+
+export class UpsertShopConfigDto {
+  @ApiProperty({ required: false })
+  @IsUUID()
+  @IsOptional()
+  id?: string;
+
+  @ApiProperty({ required: true })
+  @IsUUID()
+  shopId: string;
+
+  @ApiProperty({ required: true })
+  config: ShopConfigDto;
 }

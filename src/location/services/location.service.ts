@@ -15,8 +15,6 @@ export class LocationService {
         params: {
           query: address,
           key: this.configService.get<string>('GOOGLE_MAPS_API_KEY'),
-          location: { lat: 22.5708501, lng: 88.4353966 },
-          radius: 5000,
         },
       });
       return res.data;

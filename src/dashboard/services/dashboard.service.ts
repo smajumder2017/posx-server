@@ -265,7 +265,7 @@ export class DashboardService {
     const headers: Array<{ date: string; day: string }> = [];
     const aggregatedItems = series
       .map((date) => {
-        console.log(new Date(date));
+        // console.log(new Date(date));
         headers.push({
           date: moment(new Date(date)).format('DD/MM/YYYY'),
           day: moment(new Date(date)).format('dddd').toString(),

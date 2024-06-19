@@ -18,4 +18,15 @@ export class DashboardController {
   ) {
     return this.dashboardService.getSalesDataByRange(shopId, dateRange);
   }
+
+  @Post('itemsales/:shopId')
+  getOrderItemsSalesByRange(
+    @Param('shopId') shopId: string,
+    @Body() dateRange: SalesDateRange,
+  ) {
+    return this.dashboardService.getItemSalesSummaryByDateRange(
+      shopId,
+      dateRange,
+    );
+  }
 }

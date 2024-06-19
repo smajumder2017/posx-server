@@ -143,7 +143,12 @@ export class DashboardService {
     const lastPeriodTotalSales = lastWeekBills.reduce((acc, curr) => {
       return acc + curr.totalAmount;
     }, 0);
-
+    console.log(
+      'diff',
+      firstday,
+      lastday,
+      moment(lastday).diff(firstday, 'days'),
+    );
     const series: {
       [key: string]: {
         total: number;
@@ -152,11 +157,9 @@ export class DashboardService {
         debitCard: number;
         creditCard: number;
       };
-    } = Array.from(Array(7))
+    } = Array.from(Array(moment(lastday).diff(firstday, 'days') + 1))
       .map((_, index) => {
-        return moment(lastday)
-          .subtract(index.toString(), 'd')
-          .format('DD/MM/YYYY');
+        return moment(lastday).subtract(index, 'd').format('DD/MM/YYYY');
       })
       .reverse()
       .reduce((acc, curr) => {
@@ -169,7 +172,7 @@ export class DashboardService {
         };
         return acc;
       }, {});
-
+    console.log(series);
     const salesByDate = bills.reduce(
       (result, { createdAt, totalAmount, payments }) => {
         const date: string = moment(createdAt).format('DD/MM/YYYY');
@@ -236,7 +239,6 @@ export class DashboardService {
     const lastday = new Date(
       moment(range.endDate).format('YYYY-MM-DD').toString(),
     );
-    console.log(firstday, lastday, moment(lastday).diff(firstday, 'd') + 1);
     const items = await this.prismaService.orderItem.findMany({
       include: { order: true },
       where: {
@@ -252,7 +254,7 @@ export class DashboardService {
     });
 
     const series: string[] = Array.from(
-      Array(moment(lastday).diff(firstday, 'days')),
+      Array(moment(lastday).diff(firstday, 'days') + 1),
     )
       .map((_, index) => {
         return moment(lastday)
@@ -261,6 +263,8 @@ export class DashboardService {
           .toString();
       })
       .reverse();
+    console.log(moment(lastday));
+    console.log(series);
 
     const headers: Array<{ date: string; day: string }> = [];
     const aggregatedItems = series

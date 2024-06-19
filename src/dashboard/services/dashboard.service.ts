@@ -252,7 +252,7 @@ export class DashboardService {
     });
 
     const series: string[] = Array.from(
-      Array(moment(lastday).diff(firstday, 'days') + 1),
+      Array(moment(lastday).diff(firstday, 'days')),
     )
       .map((_, index) => {
         return moment(lastday)

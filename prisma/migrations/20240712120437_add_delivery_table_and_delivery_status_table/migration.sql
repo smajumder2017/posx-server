@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE `billing` ADD COLUMN `deliveryCharges` DOUBLE NULL DEFAULT 0,
+ALTER TABLE `Billing` ADD COLUMN `deliveryCharges` DOUBLE NULL DEFAULT 0,
     ADD COLUMN `packingCharges` DOUBLE NULL DEFAULT 0;
 
 -- CreateTable

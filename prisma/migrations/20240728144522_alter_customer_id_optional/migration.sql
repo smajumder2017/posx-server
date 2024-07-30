@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `deliverypartner` ADD COLUMN `isActive` BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE `DeliveryPartner` ADD COLUMN `isActive` BOOLEAN NOT NULL DEFAULT true;
 
 -- CreateIndex
 CREATE UNIQUE INDEX `Order_deliveryPartnerId_partnerOrderId_key` ON `Order`(`deliveryPartnerId`, `partnerOrderId`);

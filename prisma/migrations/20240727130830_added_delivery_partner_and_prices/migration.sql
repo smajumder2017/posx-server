@@ -1,8 +1,8 @@
 -- AlterTable
-ALTER TABLE `menuitems` ADD COLUMN `onlineDeliveryPrice` DOUBLE NULL;
+ALTER TABLE `MenuItems` ADD COLUMN `onlineDeliveryPrice` DOUBLE NULL;
 
 -- AlterTable
-ALTER TABLE `order` ADD COLUMN `deliveryPartnerId` VARCHAR(191) NULL,
+ALTER TABLE `Order` ADD COLUMN `deliveryPartnerId` VARCHAR(191) NULL,
     ADD COLUMN `partnerOrderId` VARCHAR(191) NULL;
 
 -- CreateTable

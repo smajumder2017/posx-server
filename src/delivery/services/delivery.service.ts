@@ -16,4 +16,12 @@ export class DeliveryService {
       include: { deliveryStatus: true },
     });
   }
+
+  findAllDeliveryPartners(whereOptions: Prisma.DeliveryPartnerFindManyArgs) {
+    return this.prismaService.deliveryPartner.findMany(whereOptions);
+  }
+
+  deliveryPartnerCount(whereOptions?: Prisma.DeliveryPartnerCountArgs) {
+    return this.prismaService.deliveryPartner.count(whereOptions);
+  }
 }

@@ -103,7 +103,12 @@ export class OrderController {
     });
     const orders = await this.orderService.searchOrders({
       where: whereOptions,
-      include: { orderStatus: true, employee: true, customer: true },
+      include: {
+        orderStatus: true,
+        employee: true,
+        customer: true,
+        deliveryPartner: true,
+      },
       skip: parseInt(skip),
       take: parseInt(take),
       orderBy: {

@@ -49,6 +49,11 @@ export class CreateMenuItemDto {
   @ApiProperty({ required: false })
   @IsNumber()
   @IsOptional()
+  onlineDeliveryPrice?: number;
+
+  @ApiProperty({ required: false })
+  @IsNumber()
+  @IsOptional()
   waitingTime?: number;
 
   @ApiProperty({ required: true })
@@ -113,6 +118,11 @@ export class UpdateMenuItemDto {
   @IsNumber()
   @IsOptional()
   price?: number;
+
+  @ApiProperty({ required: false })
+  @IsNumber()
+  @IsOptional()
+  onlineDeliveryPrice: number;
 
   @ApiProperty({ required: false })
   @IsNumber()

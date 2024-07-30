@@ -126,25 +126,26 @@ model MenuCategory {
 }
 
 model MenuItems {
-  id            String       @id @default(uuid())
-  itemName      String
-  shortCode     String
-  description   String       @db.Text
-  availability  Boolean
-  isActive      Boolean
-  foodType      String
-  price         Float
-  waitingTime   Int?
-  spiceScale    String
-  servingTime   Json?
-  itemImageUrl  String?
-  remoteImageId String?
-  categoryId    String
-  shopId        String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  category      MenuCategory @relation(fields: [categoryId], references: [id])
-  shop          Shop         @relation(fields: [shopId], references: [id])
+  id                  String       @id @default(uuid())
+  itemName            String
+  shortCode           String
+  description         String       @db.Text
+  availability        Boolean
+  isActive            Boolean
+  foodType            String
+  price               Float
+  onlineDeliveryPrice Float?
+  waitingTime         Int?
+  spiceScale          String
+  servingTime         Json?
+  itemImageUrl        String?
+  remoteImageId       String?
+  categoryId          String
+  shopId              String
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  category            MenuCategory @relation(fields: [categoryId], references: [id])
+  shop                Shop         @relation(fields: [shopId], references: [id])
 }
 
 model Customer {
@@ -168,22 +169,37 @@ model OrderStatus {
 }
 
 model Order {
-  id                 String      @id
+  id                 String           @id
   orderNumber        String
   shopId             String
   customerId         String?
   employeeId         String?
+  deliveryPartnerId  String?
+  partnerOrderId     String?
   orderStatusId      Int
-  isClosed           Boolean     @default(false)
+  isClosed           Boolean          @default(false)
   cancellationReason String?
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
   items              OrderItem[]
-  orderStatus        OrderStatus @relation(fields: [orderStatusId], references: [id])
-  employee           User?       @relation(fields: [employeeId], references: [id])
-  customer           Customer?   @relation(fields: [customerId], references: [id])
+  orderStatus        OrderStatus      @relation(fields: [orderStatusId], references: [id])
+  employee           User?            @relation(fields: [employeeId], references: [id])
+  customer           Customer?        @relation(fields: [customerId], references: [id])
   bills              Billing[]
-  Delivery           Delivery[]
+  delivery           Delivery[]
+  deliveryPartner    DeliveryPartner? @relation(fields: [deliveryPartnerId], references: [id])
+
+  @@unique([deliveryPartnerId, partnerOrderId])
+}
+
+model DeliveryPartner {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Order     Order[]
+  Billing   Billing[]
 }
 
 model DeliveryStatus {
@@ -226,28 +242,30 @@ model OrderItem {
 }
 
 model Billing {
-  id              String    @id @default(uuid())
-  orderId         String
-  shopId          String
-  customerId      String
-  employeeId      String
-  isActive        Boolean   @default(true)
-  isSetteled      Boolean
-  amount          Float
-  discount        Float     @default(0)
-  gst             Float     @default(0)
-  packingCharges  Float?    @default(0)
-  deliveryCharges Float?    @default(0)
-  serviceCharges  Float     @default(0)
-  totalAmount     Float
-  roundoffDiff    Float
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  order           Order     @relation(fields: [orderId], references: [id])
-  shop            Shop      @relation(fields: [shopId], references: [id])
-  employee        User      @relation(fields: [employeeId], references: [id])
-  customer        Customer  @relation(fields: [customerId], references: [id])
-  payments        Payment[]
+  id                String           @id @default(uuid())
+  orderId           String
+  shopId            String
+  customerId        String?
+  deliveryPartnerId String?
+  employeeId        String
+  isActive          Boolean          @default(true)
+  isSetteled        Boolean
+  amount            Float
+  discount          Float            @default(0)
+  gst               Float            @default(0)
+  packingCharges    Float?           @default(0)
+  deliveryCharges   Float?           @default(0)
+  serviceCharges    Float            @default(0)
+  totalAmount       Float
+  roundoffDiff      Float
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  order             Order            @relation(fields: [orderId], references: [id])
+  shop              Shop             @relation(fields: [shopId], references: [id])
+  employee          User             @relation(fields: [employeeId], references: [id])
+  customer          Customer?        @relation(fields: [customerId], references: [id])
+  payments          Payment[]
+  deliveryPartner   DeliveryPartner? @relation(fields: [deliveryPartnerId], references: [id])
 }
 
 model Payment {

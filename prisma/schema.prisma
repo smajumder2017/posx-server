@@ -79,9 +79,9 @@ model Shop {
   latitude                String?
   longitude               String?
   gstinNo                 String?
-  cgstPercentage          Int?
-  sgstPercentage          Int?
-  serviceChargePercentage Int?
+  cgstPercentage          Float?
+  sgstPercentage          Float?
+  serviceChargePercentage Float?
   createdAt               DateTime       @default(now())
   updatedAt               DateTime       @updatedAt
   shopType                ShopType       @relation(fields: [shopTypeId], references: [id])

@@ -155,7 +155,7 @@ export class DashboardService {
         debitCard: number;
         creditCard: number;
       };
-    } = Array.from(Array(moment(lastday).diff(firstday, 'days') + 1))
+    } = Array.from(Array(moment(lastday).diff(firstday, 'days')))
       .map((_, index) => {
         return moment(lastday).subtract(index, 'd').format('DD/MM/YYYY');
       })
@@ -171,25 +171,24 @@ export class DashboardService {
         return acc;
       }, {});
     console.log(series);
-    const salesByDate = bills.reduce(
-      (result, { createdAt, totalAmount, payments }) => {
-        const date: string = moment(createdAt).format('DD/MM/YYYY');
-        const total = (result[date]?.total || 0) + totalAmount;
-        const cash =
-          (result[date]?.cash || 0) + this.getTotalPayments(payments, 'Cash');
-        const upi =
-          (result[date]?.upi || 0) + this.getTotalPayments(payments, 'UPI');
-        const debitCard =
-          (result[date]?.debitCard || 0) +
-          this.getTotalPayments(payments, 'DebitCard');
-        const creditCard =
-          (result[date]?.creditCard || 0) +
-          this.getTotalPayments(payments, 'CreditCard');
-        result[date] = { total, cash, upi, debitCard, creditCard };
-        return result;
-      },
-      series,
-    );
+    const salesByDate = bills.reduce((result, { createdAt, payments }) => {
+      const date: string = moment(createdAt).format('DD/MM/YYYY');
+
+      const cash =
+        (result[date]?.cash || 0) + this.getTotalPayments(payments, 'Cash');
+      const upi =
+        (result[date]?.upi || 0) + this.getTotalPayments(payments, 'UPI');
+      const debitCard =
+        (result[date]?.debitCard || 0) +
+        this.getTotalPayments(payments, 'DebitCard');
+      const creditCard =
+        (result[date]?.creditCard || 0) +
+        this.getTotalPayments(payments, 'CreditCard');
+      const total =
+        (result[date]?.total || 0) + cash + upi + creditCard + debitCard;
+      result[date] = { total, cash, upi, debitCard, creditCard };
+      return result;
+    }, series);
 
     return { salesByDate, lastPeriodTotalSales };
   }
@@ -252,7 +251,7 @@ export class DashboardService {
     });
 
     const series: string[] = Array.from(
-      Array(moment(lastday).diff(firstday, 'days') + 1),
+      Array(moment(lastday).diff(firstday, 'days')),
     )
       .map((_, index) => {
         return moment(lastday)

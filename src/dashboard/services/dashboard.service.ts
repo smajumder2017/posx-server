@@ -104,7 +104,7 @@ export class DashboardService {
     const bills = await this.prismaService.billing.findMany({
       where: {
         createdAt: {
-          lte: lastday,
+          lt: lastday,
           gte: firstday,
         },
         isActive: true,
@@ -241,7 +241,7 @@ export class DashboardService {
       include: { order: true },
       where: {
         createdAt: {
-          lte: lastday,
+          lt: lastday,
           gte: firstday,
         },
         order: { orderStatusId: 2, shopId },

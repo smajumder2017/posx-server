@@ -82,8 +82,7 @@ export class DashboardService {
       const creditCard =
         (result[date]?.creditCard || 0) +
         this.getTotalPayments(payments, 'CreditCard');
-      const total =
-        (result[date]?.total || 0) + cash + upi + debitCard + creditCard;
+      const total = cash + upi + debitCard + creditCard;
       result[date] = { total, cash, upi, debitCard, creditCard };
       return result;
     }, series);
@@ -104,7 +103,7 @@ export class DashboardService {
     const bills = await this.prismaService.billing.findMany({
       where: {
         createdAt: {
-          lt: lastday,
+          lte: lastday,
           gte: firstday,
         },
         isActive: true,
@@ -186,8 +185,7 @@ export class DashboardService {
       const creditCard =
         (result[date]?.creditCard || 0) +
         this.getTotalPayments(payments, 'CreditCard');
-      const total =
-        (result[date]?.total || 0) + cash + upi + creditCard + debitCard;
+      const total = cash + upi + creditCard + debitCard;
       result[date] = { total, cash, upi, debitCard, creditCard };
       return result;
     }, series);
@@ -242,7 +240,7 @@ export class DashboardService {
       include: { order: true },
       where: {
         createdAt: {
-          lt: lastday,
+          lte: lastday,
           gte: firstday,
         },
         order: { orderStatusId: 2, shopId },

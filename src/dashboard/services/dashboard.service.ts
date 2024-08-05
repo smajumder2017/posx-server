@@ -155,7 +155,7 @@ export class DashboardService {
         debitCard: number;
         creditCard: number;
       };
-    } = Array.from(Array(moment(lastday).diff(firstday, 'days')))
+    } = Array.from(Array(moment(lastday).diff(firstday, 'days') + 1))
       .map((_, index) => {
         return moment(lastday).subtract(index, 'd').format('DD/MM/YYYY');
       })
@@ -251,7 +251,7 @@ export class DashboardService {
     });
 
     const series: string[] = Array.from(
-      Array(moment(lastday).diff(firstday, 'days')),
+      Array(moment(lastday).diff(firstday, 'days') + 1),
     )
       .map((_, index) => {
         return moment(lastday)

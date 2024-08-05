@@ -70,25 +70,23 @@ export class DashboardService {
         return acc;
       }, {});
 
-    const salesByDate = bills.reduce(
-      (result, { createdAt, totalAmount, payments }) => {
-        const date: string = moment(createdAt).format('DD/MM/YYYY');
-        const total = (result[date]?.total || 0) + totalAmount;
-        const cash =
-          (result[date]?.cash || 0) + this.getTotalPayments(payments, 'Cash');
-        const upi =
-          (result[date]?.upi || 0) + this.getTotalPayments(payments, 'UPI');
-        const debitCard =
-          (result[date]?.debitCard || 0) +
-          this.getTotalPayments(payments, 'DebitCard');
-        const creditCard =
-          (result[date]?.creditCard || 0) +
-          this.getTotalPayments(payments, 'CreditCard');
-        result[date] = { total, cash, upi, debitCard, creditCard };
-        return result;
-      },
-      series,
-    );
+    const salesByDate = bills.reduce((result, { createdAt, payments }) => {
+      const date: string = moment(createdAt).format('DD/MM/YYYY');
+      const cash =
+        (result[date]?.cash || 0) + this.getTotalPayments(payments, 'Cash');
+      const upi =
+        (result[date]?.upi || 0) + this.getTotalPayments(payments, 'UPI');
+      const debitCard =
+        (result[date]?.debitCard || 0) +
+        this.getTotalPayments(payments, 'DebitCard');
+      const creditCard =
+        (result[date]?.creditCard || 0) +
+        this.getTotalPayments(payments, 'CreditCard');
+      const total =
+        (result[date]?.total || 0) + cash + upi + debitCard + creditCard;
+      result[date] = { total, cash, upi, debitCard, creditCard };
+      return result;
+    }, series);
 
     return { salesByDate };
   }

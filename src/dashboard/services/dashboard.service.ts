@@ -233,9 +233,7 @@ export class DashboardService {
     const firstday = new Date(
       moment(range.startDate).format('YYYY-MM-DD').toString(),
     );
-    const lastday = new Date(
-      moment(range.endDate).endOf('day').toString().toString(),
-    );
+    const lastday = new Date(moment(range.endDate).endOf('day').toString());
     const items = await this.prismaService.orderItem.findMany({
       include: { order: true },
       where: {

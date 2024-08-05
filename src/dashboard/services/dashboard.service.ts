@@ -98,7 +98,7 @@ export class DashboardService {
     // const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
 
     const firstday = new Date(moment(range.startDate).format('YYYY-MM-DD'));
-    const lastday = new Date(moment(range.endDate).format('YYYY-MM-DD'));
+    const lastday = new Date(moment(range.endDate).endOf('day').toString());
 
     const bills = await this.prismaService.billing.findMany({
       where: {
@@ -121,7 +121,7 @@ export class DashboardService {
       currentDate.clone().startOf('isoWeek').toString(),
     );
     const endDate = new Date(
-      currentDate.clone().endOf('isoWeek').add(1, 'd').toString(),
+      currentDate.clone().endOf('isoWeek').endOf('day').toString(),
     );
 
     const lastWeekBills = await this.prismaService.billing.findMany({
@@ -234,7 +234,7 @@ export class DashboardService {
       moment(range.startDate).format('YYYY-MM-DD').toString(),
     );
     const lastday = new Date(
-      moment(range.endDate).format('YYYY-MM-DD').toString(),
+      moment(range.endDate).endOf('day').toString().toString(),
     );
     const items = await this.prismaService.orderItem.findMany({
       include: { order: true },

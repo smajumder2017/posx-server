@@ -121,7 +121,9 @@ export class DashboardService {
     const startDate = new Date(
       currentDate.clone().startOf('isoWeek').toString(),
     );
-    const endDate = new Date(currentDate.clone().endOf('isoWeek').toString());
+    const endDate = new Date(
+      currentDate.clone().endOf('isoWeek').add(1, 'd').toString(),
+    );
 
     const lastWeekBills = await this.prismaService.billing.findMany({
       where: {
